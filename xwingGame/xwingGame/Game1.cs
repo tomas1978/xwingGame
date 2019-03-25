@@ -13,6 +13,7 @@ namespace xwingGame
         SpriteBatch spriteBatch;
         Texture2D xwing;
         Vector2 xwingPos = new Vector2(100, 300);
+        KeyboardState kstate = new KeyboardState();
 
         public Game1()
         {
@@ -66,7 +67,22 @@ namespace xwingGame
                 Exit();
 
             // TODO: Add your update logic here
-
+            kstate = Keyboard.GetState();
+            if (kstate.IsKeyDown(Keys.Left)) {
+                xwingPos.X--;
+            }
+            if (kstate.IsKeyDown(Keys.Right))
+            {
+                xwingPos.X++;
+            }
+            if (kstate.IsKeyDown(Keys.Up))
+            {
+                xwingPos.Y--;
+            }
+            if (kstate.IsKeyDown(Keys.Down))
+            {
+                xwingPos.Y++;
+            }
             base.Update(gameTime);
         }
 
