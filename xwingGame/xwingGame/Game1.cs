@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace xwingGame
 {
@@ -14,6 +15,8 @@ namespace xwingGame
         Texture2D xwing;
         Vector2 xwingPos = new Vector2(100, 300);
         KeyboardState kstate = new KeyboardState();
+        Texture2D shotTexture;
+        List<Shot> shots = new List<Shot>();
 
         public Game1()
         {
@@ -45,6 +48,8 @@ namespace xwingGame
 
             // TODO: use this.Content to load your game content here
             xwing = Content.Load<Texture2D>("xwing");
+            shotTexture = Content.Load<Texture2D>("shot");
+
         }
 
         /// <summary>
@@ -66,7 +71,6 @@ namespace xwingGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
             kstate = Keyboard.GetState();
             if (kstate.IsKeyDown(Keys.Left)) {
                 xwingPos.X--;
@@ -83,6 +87,16 @@ namespace xwingGame
             {
                 xwingPos.Y++;
             }
+            if (kstate.IsKeyDown(Keys.Space))
+            {
+                shots.Add(new Shot(shotTexture, new Vector2(xwingPos.X,xwingPos.Y)));
+            }
+
+            foreach(Shot s in shots)
+            {
+                s.Position = new Vector2(s.Position.X, s.Position.Y - 3);
+            }
+
             base.Update(gameTime);
         }
 
@@ -95,6 +109,10 @@ namespace xwingGame
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
             spriteBatch.Draw(xwing, xwingPos, Color.White);
+            foreach(Shot s in shots)
+            {
+                s.Draw(spriteBatch);
+            }
             spriteBatch.End();
 
             // TODO: Add your drawing code here
