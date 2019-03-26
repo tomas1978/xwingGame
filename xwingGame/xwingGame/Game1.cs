@@ -89,10 +89,11 @@ namespace xwingGame
             }
             if (kstate.IsKeyDown(Keys.Space))
             {
-                shots.Add(new Shot(shotTexture, new Vector2(xwingPos.X,xwingPos.Y)));
+                shots.Add(new Shot(shotTexture, new Vector2(xwingPos.X+5, xwingPos.Y+8)));
+                shots.Add(new Shot(shotTexture, new Vector2(xwingPos.X+xwing.Bounds.Width-12, xwingPos.Y + 8)));
             }
 
-            foreach(Shot s in shots)
+            foreach (Shot s in shots)
             {
                 s.Position = new Vector2(s.Position.X, s.Position.Y - 3);
             }
