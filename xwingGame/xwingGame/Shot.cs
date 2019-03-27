@@ -12,11 +12,19 @@ namespace xwingGame
     {
         Vector2 position;
         Texture2D texture;
+        Rectangle boundingBox;
 
         public Shot(Texture2D newTexture, Vector2 newPosition)
         {
             position = newPosition;
             texture = newTexture;
+            boundingBox = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
+        }
+
+        public Rectangle BoundingBox
+        {
+            set { boundingBox = value; }
+            get { return boundingBox; }
         }
 
         public void Draw(SpriteBatch spriteBatch)

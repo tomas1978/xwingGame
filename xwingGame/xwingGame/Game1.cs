@@ -103,11 +103,16 @@ namespace xwingGame
 
             tiefighter.MoveX();
 
+            //Loop through all shots, to move them upwards and check if a shot hits an enemy
             foreach (Shot s in shots)
             {
                 s.Position = new Vector2(s.Position.X, s.Position.Y - 3);
+                if(s.BoundingBox.Intersects(tiefighter.BoundingBox))
+                {
+                    tiefighter.Position = new Vector2(0,0);
+                }
             }
-
+            
             base.Update(gameTime);
         }
 
