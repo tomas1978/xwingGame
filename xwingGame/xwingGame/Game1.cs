@@ -13,6 +13,8 @@ namespace xwingGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D xwing;
+        Texture2D tiefighterTexture;
+        Enemy tiefighter;
         Vector2 xwingPos = new Vector2(100, 300);
         KeyboardState kstate = new KeyboardState();
         Texture2D shotTexture;
@@ -32,8 +34,6 @@ namespace xwingGame
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -46,9 +46,10 @@ namespace xwingGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
             xwing = Content.Load<Texture2D>("xwing");
             shotTexture = Content.Load<Texture2D>("shot");
+            tiefighterTexture = Content.Load<Texture2D>("tiefighter");
+            tiefighter = new Enemy(tiefighterTexture, new Vector2(100, 50),3);
 
         }
 
@@ -93,6 +94,15 @@ namespace xwingGame
                 shots.Add(new Shot(shotTexture, new Vector2(xwingPos.X+xwing.Bounds.Width-12, xwingPos.Y + 8)));
             }
 
+
+            //Check if the enemy is moving outside the bounds of the game windows
+            if (tiefighter.Position.X <= 0 || tiefighter.Position.X>=Window.ClientBounds.Width-tiefighter.Texture.Width)
+            {
+                tiefighter.Speed *= -1; //Change direction
+            }
+
+            tiefighter.MoveX();
+
             foreach (Shot s in shots)
             {
                 s.Position = new Vector2(s.Position.X, s.Position.Y - 3);
@@ -110,13 +120,13 @@ namespace xwingGame
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
             spriteBatch.Draw(xwing, xwingPos, Color.White);
+            tiefighter.Draw(spriteBatch);
+            
             foreach(Shot s in shots)
             {
                 s.Draw(spriteBatch);
             }
             spriteBatch.End();
-
-            // TODO: Add your drawing code here
 
             base.Draw(gameTime);
         }
