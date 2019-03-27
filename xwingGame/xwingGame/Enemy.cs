@@ -38,6 +38,7 @@ namespace xwingGame
         public void MoveX()
         {
             position.X += this.speed;
+            boundingBox.Location = position.ToPoint();
         }
 
         public int Speed
