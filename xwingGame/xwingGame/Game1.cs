@@ -12,10 +12,10 @@ namespace xwingGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D xwing;
+        Texture2D xwingTexture;
         Texture2D tiefighterTexture;
+        Player xwing;
         Enemy tiefighter;
-        Vector2 xwingPos = new Vector2(100, 300);
         KeyboardState kstate = new KeyboardState();
         Texture2D shotTexture;
         List<Shot> shots = new List<Shot>();
@@ -46,11 +46,15 @@ namespace xwingGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            xwing = Content.Load<Texture2D>("xwing");
+            xwingTexture = Content.Load<Texture2D>("xwing");
+            //xwing = new Player(xwingTexture, new Vector2(100, 300), 3);
+            xwing = new Player(xwingTexture, new Vector2(
+                                                    Window.ClientBounds.Width/2-xwingTexture.Width, 
+                                                    Window.ClientBounds.Height-xwingTexture.Height), 3);
+
             shotTexture = Content.Load<Texture2D>("shot");
             tiefighterTexture = Content.Load<Texture2D>("tiefighter");
             tiefighter = new Enemy(tiefighterTexture, new Vector2(100, 50),3);
-
         }
 
         /// <summary>
@@ -74,24 +78,18 @@ namespace xwingGame
 
             kstate = Keyboard.GetState();
             if (kstate.IsKeyDown(Keys.Left)) {
-                xwingPos.X--;
+                xwing.MoveX(-1);
             }
             if (kstate.IsKeyDown(Keys.Right))
             {
-                xwingPos.X++;
+                xwing.MoveX(1);
             }
-            if (kstate.IsKeyDown(Keys.Up))
-            {
-                xwingPos.Y--;
-            }
-            if (kstate.IsKeyDown(Keys.Down))
-            {
-                xwingPos.Y++;
-            }
+            
             if (kstate.IsKeyDown(Keys.Space))
             {
-                shots.Add(new Shot(shotTexture, new Vector2(xwingPos.X+5, xwingPos.Y+8)));
-                shots.Add(new Shot(shotTexture, new Vector2(xwingPos.X+xwing.Bounds.Width-12, xwingPos.Y + 8)));
+                shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X+5, xwing.Position.Y+8)));
+                shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X+xwing.Texture.Bounds.Width-12, 
+                                                                xwing.Position.Y + 8)));
             }
 
 
@@ -124,7 +122,7 @@ namespace xwingGame
         {
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
-            spriteBatch.Draw(xwing, xwingPos, Color.White);
+            xwing.Draw(spriteBatch);
             tiefighter.Draw(spriteBatch);
             
             foreach(Shot s in shots)
