@@ -8,24 +8,19 @@ using System.Threading.Tasks;
 
 namespace xwingGame
 {
-    class Shot
+    class Player
     {
         Vector2 position;
         Texture2D texture;
+        int speed; //Positive speed: Move right, negative speed: Move left
         Rectangle boundingBox;
-        int speed = 3;
 
-        public Shot(Texture2D newTexture, Vector2 newPosition)
+        public Player(Texture2D newTexture, Vector2 newPosition, int newSpeed)
         {
             position = newPosition;
             texture = newTexture;
+            speed = newSpeed;
             boundingBox = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
-        }
-
-        public int Speed
-        {
-            set { speed = value; }
-            get { return speed; }
         }
 
         public Rectangle BoundingBox
@@ -39,10 +34,16 @@ namespace xwingGame
             spriteBatch.Draw(texture, position, Color.White);
         }
 
-        public void Move()
+        public void MoveX(int direction)
         {
-            position.Y -= speed;
+            position.X += this.speed*direction;
             boundingBox.Location = position.ToPoint();
+        }
+
+        public int Speed
+        {
+            set { speed = value; }
+            get { return speed; }
         }
 
         public Vector2 Position
@@ -50,5 +51,12 @@ namespace xwingGame
             set { position = value; }
             get { return position; }
         }
+
+        public Texture2D Texture
+        {
+            set { texture = value; }
+            get { return texture; }
+        }
     }
 }
+

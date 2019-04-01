@@ -13,12 +13,21 @@ namespace xwingGame
         Vector2 position;
         Texture2D texture;
         int speed; //Positive speed: Move right, negative speed: Move left
+        Rectangle boundingBox;
 
         public Enemy(Texture2D newTexture, Vector2 newPosition, int newSpeed)
         {
             position = newPosition;
             texture = newTexture;
-            speed = newSpeed; 
+            speed = newSpeed;
+            boundingBox = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
+
+        }
+
+        public Rectangle BoundingBox
+        {
+            set { boundingBox = value; }
+            get { return boundingBox; }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -29,6 +38,7 @@ namespace xwingGame
         public void MoveX()
         {
             position.X += this.speed;
+            boundingBox.Location = position.ToPoint();
         }
 
         public int Speed
