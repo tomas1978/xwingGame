@@ -14,7 +14,8 @@ namespace xwingGame
         SpriteBatch spriteBatch;
         Texture2D xwing;
         Texture2D tiefighterTexture;
-        Enemy tiefighter;
+
+        List<Enemy> tieFighterList;
         Vector2 xwingPos = new Vector2(100, 300);
         KeyboardState kstate = new KeyboardState();
         Texture2D shotTexture;
@@ -49,8 +50,11 @@ namespace xwingGame
             xwing = Content.Load<Texture2D>("xwing");
             shotTexture = Content.Load<Texture2D>("shot");
             tiefighterTexture = Content.Load<Texture2D>("tiefighter");
-            tiefighter = new Enemy(tiefighterTexture, new Vector2(100, 50),3);
-
+            tieFighterList = new List<Enemy>();
+            for (int i = 0; i < 10; i++)
+            {
+                tieFighterList.Add(new Enemy(tiefighterTexture, new Vector2(10+70*i, 50), 3));
+            }
         }
 
         /// <summary>
@@ -96,12 +100,16 @@ namespace xwingGame
 
 
             //Check if the enemy is moving outside the bounds of the game windows
-            if (tiefighter.Position.X <= 0 || tiefighter.Position.X>=Window.ClientBounds.Width-tiefighter.Texture.Width)
+            foreach (Enemy e in tieFighterList)
             {
-                tiefighter.Speed *= -1; //Change direction
+                if (e.Position.X <= 0 || e.Position.X >= Window.ClientBounds.Width - e.Texture.Width)
+                {
+                    e.Speed *= -1; //Change direction
+                }
+                e.MoveX();
             }
 
-            tiefighter.MoveX();
+            
 
             foreach (Shot s in shots)
             {
@@ -120,8 +128,12 @@ namespace xwingGame
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
             spriteBatch.Draw(xwing, xwingPos, Color.White);
-            tiefighter.Draw(spriteBatch);
             
+            foreach(Enemy e in tieFighterList)
+            {
+                e.Draw(spriteBatch);
+            }
+
             foreach(Shot s in shots)
             {
                 s.Draw(spriteBatch);
