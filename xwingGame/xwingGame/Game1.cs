@@ -14,10 +14,11 @@ namespace xwingGame
         SpriteBatch spriteBatch;
         Texture2D xwingTexture;
         Texture2D tiefighterTexture;
-        Enemy tiefighter;
+        Player xwing;
         KeyboardState kstate = new KeyboardState();
         Texture2D shotTexture;
         List<Shot> shots = new List<Shot>();
+        List<Enemy> tieFighterList;
 
         public Game1()
         {
@@ -53,8 +54,14 @@ namespace xwingGame
 
             shotTexture = Content.Load<Texture2D>("shot");
             tiefighterTexture = Content.Load<Texture2D>("tiefighter");
-            tiefighter = new Enemy(tiefighterTexture, new Vector2(100, 50),3);
 
+            tieFighterList = new List<Enemy>();
+            
+            //Add some enemies (TIE Fighters)
+            for (int i=0;i<10;i++)
+            {
+                tieFighterList.Add(new Enemy(tiefighterTexture, new Vector2(70*i+10, 10), 3));
+            }
         }
 
         /// <summary>
@@ -84,14 +91,14 @@ namespace xwingGame
             {
                 xwing.MoveX(1);
             }
-            
+
+            //If space is pressed, fire a shot through each laser cannon
             if (kstate.IsKeyDown(Keys.Space))
             {
                 shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X+5, xwing.Position.Y+8)));
                 shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X+xwing.Texture.Bounds.Width-12, 
                                                                 xwing.Position.Y + 8)));
             }
-
 
             //Check if the enemy is moving outside the bounds of the game windows
             foreach (Enemy e in tieFighterList)
@@ -102,16 +109,19 @@ namespace xwingGame
                 }
                 e.MoveX();
             }
-
             
-
             //Loop through all shots, to move them upwards and check if a shot hits an enemy
             foreach (Shot s in shots)
             {
                 s.Move();
-                if (s.BoundingBox.Intersects(tiefighter.BoundingBox))
+                foreach (Enemy e in tieFighterList)
                 {
-                    tiefighter.Position = new Vector2(10,0);
+                    //If a shot hits a TIE fighter
+                    if (s.BoundingBox.Intersects(e.BoundingBox))
+                    {
+                        //Move the enemy that was hit to upper left corner (temporary test code)
+                        e.Position = new Vector2(10, 0);
+                    }
                 }
             }
             
@@ -126,9 +136,14 @@ namespace xwingGame
         {
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
-            spriteBatch.Draw(xwing, xwingPos, Color.White);
-            tiefighter.Draw(spriteBatch);
-            
+            xwing.Draw(spriteBatch);
+
+            //Draw all TIE fighters
+            foreach (Enemy e in tieFighterList)
+            {
+                e.Draw(spriteBatch);
+            } 
+
             foreach(Shot s in shots)
             {
                 s.Draw(spriteBatch);
