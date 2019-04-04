@@ -19,6 +19,8 @@ namespace xwingGame
         Texture2D shotTexture;
         List<Shot> shots = new List<Shot>();
         List<Enemy> tieFighterList;
+        SpriteFont gameFont;
+        bool canShoot=false;
 
         public Game1()
         {
@@ -62,6 +64,8 @@ namespace xwingGame
             {
                 tieFighterList.Add(new Enemy(tiefighterTexture, new Vector2(70*i+10, 10), 3));
             }
+
+            gameFont = Content.Load <SpriteFont> ("gameFont");
         }
 
         /// <summary>
@@ -93,10 +97,11 @@ namespace xwingGame
             }
 
             //If space is pressed, fire a shot through each laser cannon
-            if (kstate.IsKeyDown(Keys.Space))
+            xwing.canShoot(gameTime);
+            if (kstate.IsKeyDown(Keys.Space) && canShoot)
             {
-                shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X+5, xwing.Position.Y+8)));
-                shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X+xwing.Texture.Bounds.Width-12, 
+                shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X + 5, xwing.Position.Y + 8)));
+                shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X + xwing.Texture.Bounds.Width - 12,
                                                                 xwing.Position.Y + 8)));
             }
 
@@ -148,8 +153,12 @@ namespace xwingGame
             {
                 s.Draw(spriteBatch);
             }
+
+            spriteBatch.DrawString(gameFont, "Speltid: "+xwing.test, new Vector2(50, 275), Color.White);
+
             spriteBatch.End();
 
+            
             base.Draw(gameTime);
         }
     }
