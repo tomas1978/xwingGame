@@ -14,10 +14,8 @@ namespace xwingGame
         Texture2D texture;
         int speed; //Positive speed: Move right, negative speed: Move left
         Rectangle boundingBox;
-        int fireRate = 10; //Controls the time between shots
-        int lastShot = 0;
-        public int test;
-
+        int fireRate = 300; //Controls the time between shots
+        
         public Player(Texture2D newTexture, Vector2 newPosition, int newSpeed)
         {
             position = newPosition;
@@ -36,22 +34,6 @@ namespace xwingGame
         {
             set { fireRate = value; }
             get { return fireRate; }
-        }
-
-        public bool canShoot(GameTime gameTime)
-        {
-            //test = gameTime.ElapsedGameTime.Seconds - this.lastShot;
-            test += gameTime.ElapsedGameTime.Seconds;
-
-            if (gameTime.ElapsedGameTime.Seconds-this.lastShot>2)
-            {
-                lastShot = gameTime.ElapsedGameTime.Seconds;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

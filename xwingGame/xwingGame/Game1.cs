@@ -15,6 +15,7 @@ namespace xwingGame
         Texture2D xwingTexture;
         Texture2D tiefighterTexture;
         Player xwing;
+        int xwingLastShot=0;
         KeyboardState kstate = new KeyboardState();
         Texture2D shotTexture;
         List<Shot> shots = new List<Shot>();
@@ -49,14 +50,12 @@ namespace xwingGame
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             xwingTexture = Content.Load<Texture2D>("xwing");
-            //xwing = new Player(xwingTexture, new Vector2(100, 300), 3);
             xwing = new Player(xwingTexture, new Vector2(
                                                     Window.ClientBounds.Width/2-xwingTexture.Width, 
                                                     Window.ClientBounds.Height-xwingTexture.Height), 3);
 
             shotTexture = Content.Load<Texture2D>("shot");
             tiefighterTexture = Content.Load<Texture2D>("tiefighter");
-
             tieFighterList = new List<Enemy>();
             
             //Add some enemies (TIE Fighters)
@@ -96,10 +95,10 @@ namespace xwingGame
                 xwing.MoveX(1);
             }
 
-            //If space is pressed, fire a shot through each laser cannon
-            xwing.canShoot(gameTime);
-            if (kstate.IsKeyDown(Keys.Space) && canShoot)
+            //If space is pressed, fire a shot through each laser cannon if enough time has elapsed since last shot
+            if (kstate.IsKeyDown(Keys.Space) && System.Math.Abs(xwingLastShot-gameTime.TotalGameTime.Milliseconds)>xwing.FireRate)
             {
+                xwingLastShot = gameTime.TotalGameTime.Milliseconds;
                 shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X + 5, xwing.Position.Y + 8)));
                 shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X + xwing.Texture.Bounds.Width - 12,
                                                                 xwing.Position.Y + 8)));
@@ -154,10 +153,9 @@ namespace xwingGame
                 s.Draw(spriteBatch);
             }
 
-            spriteBatch.DrawString(gameFont, "Speltid: "+xwing.test, new Vector2(50, 275), Color.White);
+            spriteBatch.DrawString(gameFont, "Speltid: ", new Vector2(50, 275), Color.White);
 
             spriteBatch.End();
-
             
             base.Draw(gameTime);
         }
