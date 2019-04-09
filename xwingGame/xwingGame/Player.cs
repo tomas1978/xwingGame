@@ -15,6 +15,7 @@ namespace xwingGame
         int speed; //Positive speed: Move right, negative speed: Move left
         Rectangle boundingBox;
         int fireRate = 300; //Controls the time between shots
+        int lastShot = 0; //Last time the player fired a shot
         
         public Player(Texture2D newTexture, Vector2 newPosition, int newSpeed)
         {
@@ -34,6 +35,12 @@ namespace xwingGame
         {
             set { fireRate = value; }
             get { return fireRate; }
+        }
+
+        public int LastShot
+        {
+            set { lastShot = value; }
+            get { return lastShot; }
         }
 
         public void Draw(SpriteBatch spriteBatch)

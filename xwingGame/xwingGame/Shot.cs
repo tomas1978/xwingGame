@@ -12,7 +12,7 @@ namespace xwingGame
     {
         Vector2 position;
         Texture2D texture;
-        Rectangle boundingBox;
+        Rectangle boundingBox; //Used for hit detection
         int speed = 3;
 
         public Shot(Texture2D newTexture, Vector2 newPosition)
@@ -39,9 +39,10 @@ namespace xwingGame
             spriteBatch.Draw(texture, position, Color.White);
         }
 
-        public void Move()
+        //direction 1: up, direction -1: down
+        public void Move(int direction)
         {
-            position.Y -= speed;
+            position.Y -= speed*direction;
             boundingBox.Location = position.ToPoint();
         }
 

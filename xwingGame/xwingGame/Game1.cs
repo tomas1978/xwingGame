@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace xwingGame
@@ -14,17 +15,20 @@ namespace xwingGame
         SpriteBatch spriteBatch;
         Texture2D xwingTexture;
         Texture2D tiefighterTexture;
-        Player xwing;
-        int xwingLastShot=0;
-        KeyboardState kstate = new KeyboardState();
         Texture2D shotTexture;
+        Texture2D enemyShotTexture;
+        Player xwing;
+        int playerScore = 0;
+        KeyboardState kstate = new KeyboardState();
         List<Shot> shots = new List<Shot>();
+        List<Shot> enemyShots = new List<Shot>();
         List<Enemy> tieFighterList;
         SpriteFont gameFont;
-        bool canShoot=false;
-
+        Random rand;
+        
         public Game1()
         {
+            rand = new Random();
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -55,13 +59,16 @@ namespace xwingGame
                                                     Window.ClientBounds.Height-xwingTexture.Height), 3);
 
             shotTexture = Content.Load<Texture2D>("shot");
+            enemyShotTexture = Content.Load<Texture2D>("enemyShot");
+
             tiefighterTexture = Content.Load<Texture2D>("tiefighter");
             tieFighterList = new List<Enemy>();
             
             //Add some enemies (TIE Fighters)
             for (int i=0;i<10;i++)
             {
-                tieFighterList.Add(new Enemy(tiefighterTexture, new Vector2(70*i+10, 10), 3));
+                tieFighterList.Add(new Enemy(tiefighterTexture, new Vector2(70*i+10, 50), 3));
+                tieFighterList[i].FireRate = rand.Next(500, 2000); //Set random fire rate for each enemy
             }
 
             gameFont = Content.Load <SpriteFont> ("gameFont");
@@ -96,12 +103,22 @@ namespace xwingGame
             }
 
             //If space is pressed, fire a shot through each laser cannon if enough time has elapsed since last shot
-            if (kstate.IsKeyDown(Keys.Space) && System.Math.Abs(xwingLastShot-gameTime.TotalGameTime.Milliseconds)>xwing.FireRate)
+            //if (kstate.IsKeyDown(Keys.Space) && System.Math.Abs(xwingLastShot-gameTime.TotalGameTime.Milliseconds)>xwing.FireRate)
+            if (kstate.IsKeyDown(Keys.Space) && System.Math.Abs(xwing.LastShot - gameTime.TotalGameTime.Milliseconds) > xwing.FireRate)
             {
-                xwingLastShot = gameTime.TotalGameTime.Milliseconds;
+                xwing.LastShot = gameTime.TotalGameTime.Milliseconds;
                 shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X + 5, xwing.Position.Y + 8)));
                 shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X + xwing.Texture.Bounds.Width - 12,
                                                                 xwing.Position.Y + 8)));
+            }
+
+            foreach (Enemy e in tieFighterList)
+            {
+                if (System.Math.Abs(e.LastShot - gameTime.TotalGameTime.Milliseconds) > e.FireRate)
+                {
+                    e.LastShot = gameTime.TotalGameTime.Milliseconds;
+                    enemyShots.Add(new Shot(enemyShotTexture, new Vector2(e.Position.X, e.Position.Y)));
+                }
             }
 
             //Check if the enemy is moving outside the bounds of the game windows
@@ -114,18 +131,27 @@ namespace xwingGame
                 e.MoveX();
             }
             
-            //Loop through all shots, to move them upwards and check if a shot hits an enemy
+            //Loop through all player shots, to move them upwards and check if a shot hits an enemy
             foreach (Shot s in shots)
             {
-                s.Move();
+                s.Move(1);
                 foreach (Enemy e in tieFighterList)
                 {
                     //If a shot hits a TIE fighter
                     if (s.BoundingBox.Intersects(e.BoundingBox))
                     {
-                        //Move the enemy that was hit to upper left corner (temporary test code)
-                        e.Position = new Vector2(10, 0);
+                        playerScore++; //Increase score if player hits enemy
                     }
+                }
+            }
+
+            //Loop through all enemy shots, to move them downwards and check if a shot hits the player
+            foreach(Shot s in enemyShots)
+            {
+                s.Move(-1);
+                if (s.BoundingBox.Intersects(xwing.BoundingBox))
+                {
+                    playerScore -= 1; //Decrease score if player is hit
                 }
             }
             
@@ -153,7 +179,12 @@ namespace xwingGame
                 s.Draw(spriteBatch);
             }
 
-            spriteBatch.DrawString(gameFont, "Speltid: ", new Vector2(50, 275), Color.White);
+            foreach(Shot s in enemyShots)
+            {
+                s.Draw(spriteBatch);
+            }
+
+            spriteBatch.DrawString(gameFont, "Score: "+playerScore, new Vector2(0, 0), Color.White);
 
             spriteBatch.End();
             
