@@ -134,15 +134,22 @@ namespace xwingGame
             //Loop through all player shots, to move them upwards and check if a shot hits an enemy
             foreach (Shot s in shots)
             {
+                bool hit = false; //Check if there is a hit, to end the loop when shot is removed
                 s.Move(1);
                 foreach (Enemy e in tieFighterList)
                 {
                     //If a shot hits a TIE fighter
                     if (s.BoundingBox.Intersects(e.BoundingBox))
                     {
+                        hit = true;
                         playerScore++; //Increase score if player hits enemy
+                        tieFighterList.Remove(e);
+                        shots.Remove(s);
+                        break;
                     }
                 }
+                if (hit)
+                    break;
             }
 
             //Loop through all enemy shots, to move them downwards and check if a shot hits the player
@@ -152,6 +159,8 @@ namespace xwingGame
                 if (s.BoundingBox.Intersects(xwing.BoundingBox))
                 {
                     playerScore -= 1; //Decrease score if player is hit
+                    enemyShots.Remove(s);
+                    break;
                 }
             }
             
