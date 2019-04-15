@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 
@@ -24,6 +26,7 @@ namespace xwingGame
         List<Shot> enemyShots = new List<Shot>();
         List<Enemy> tieFighterList;
         SpriteFont gameFont;
+        SoundEffect xWingFireSound;
         Random rand;
         
         public Game1()
@@ -72,6 +75,7 @@ namespace xwingGame
             }
 
             gameFont = Content.Load <SpriteFont> ("gameFont");
+            xWingFireSound = Content.Load<SoundEffect>("XWingFire");
         }
 
         /// <summary>
@@ -110,6 +114,7 @@ namespace xwingGame
                 shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X + 5, xwing.Position.Y + 8)));
                 shots.Add(new Shot(shotTexture, new Vector2(xwing.Position.X + xwing.Texture.Bounds.Width - 12,
                                                                 xwing.Position.Y + 8)));
+                xWingFireSound.Play();
             }
 
             foreach (Enemy e in tieFighterList)

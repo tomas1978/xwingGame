@@ -68,3 +68,9 @@
 /processorParam:TextureFormat=Color
 /build:enemyShot.png
 
+#begin XWingFire.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:XWingFire.wav
+
