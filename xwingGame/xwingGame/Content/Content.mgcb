@@ -74,3 +74,9 @@
 /processorParam:Quality=Best
 /build:XWingFire.wav
 
+#begin BattleMusic.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:BattleMusic.ogg
+
