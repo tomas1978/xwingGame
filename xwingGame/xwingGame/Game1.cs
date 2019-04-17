@@ -27,6 +27,7 @@ namespace xwingGame
         List<Enemy> tieFighterList;
         SpriteFont gameFont;
         SoundEffect xWingFireSound;
+        SoundEffect tieFighterFireSound;
         Song battleMusic;
         Random rand;
         
@@ -77,6 +78,7 @@ namespace xwingGame
 
             gameFont = Content.Load <SpriteFont> ("gameFont");
             xWingFireSound = Content.Load<SoundEffect>("XWingFire");
+            tieFighterFireSound = Content.Load<SoundEffect>("TIEFighterExplode");
             battleMusic = Content.Load<Song>("BattleMusic");
             MediaPlayer.Play(battleMusic);
 
@@ -169,6 +171,7 @@ namespace xwingGame
                 {
                     playerScore -= 1; //Decrease score if player is hit
                     enemyShots.Remove(s);
+                    tieFighterFireSound.Play();
                     break;
                 }
             }

@@ -80,3 +80,9 @@
 /processorParam:Quality=Best
 /build:BattleMusic.ogg
 
+#begin TIEFighterExplode.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:TIEFighterExplode.wav
+
